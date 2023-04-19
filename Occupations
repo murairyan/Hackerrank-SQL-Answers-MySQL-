@@ -1,0 +1,39 @@
+/*
+* Pivot the Occupation column in OCCUPATIONS so that each Name is sorted alphabetically and displayed underneath its corresponding Occupation. 
+* The output column headers should be Doctor, Professor, Singer, and Actor, respectively.
+* Note: Print NULL when there are no more names corresponding to an occupation.
+*
+* Occupation will only contain one of the following values: Doctor, Professor, Singer or Actor.
+*/
+
+Explanation:
+The first column is an alphabetically ordered list of Doctor names. 
+The second column is an alphabetically ordered list of Professor names. 
+The third column is an alphabetically ordered list of Singer names. 
+The fourth column is an alphabetically ordered list of Actor names. 
+The empty cell data for columns with less than the maximum number of names per occupation 
+(in this case, the Professor and Actor columns) are filled with NULL values.
+
+----------------------------------------------------------------------------------------------------------------
+
+SELECT          -- This list must be the same order as the problem
+    DOCTOR,
+    PROFESSOR,
+    SINGER,
+    ACTOR
+FROM
+    (SELECT     -- Finds the names that belong to each attribute and puts them in order
+        NAMEORDER,
+        MAX (CASE OCCUPATION WHEN 'DOCTOR' THEN NAME END) AS DOCTOR,
+        MAX (CASE OCCUPATION WHEN 'PROFESSOR' THEN NAME END) AS PROFESSOR,
+        MAX (CASE OCCUPATION WHEN 'SINGER' THEN NAME END) AS SINGER,
+        MAX (CASE OCCUPATION WHEN 'ACTOR' THEN NAME END AS ACTOR
+FROM
+    (SELECT     -- Assigns a number to each row in which they will be ordered in
+        OCCUPATION,
+        NAME,
+        ROW_NUMBER () OVER (PARTITION BY OCCUPATION ORDER BY NAME ASC) AS NAMEORDER
+        FROM OCCUPATIONS
+        AS NAMELISTS
+    GROUP BY NAMEORDER
+    ) AS NAMES;
